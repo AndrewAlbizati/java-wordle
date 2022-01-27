@@ -11,6 +11,6 @@ public class CheckButton extends JButton {
 
     public CheckButton(int guessNumber) {
         this.guessNumber = guessNumber;
-        setText("Check");
+        this.setText("Check");
     }
 }
