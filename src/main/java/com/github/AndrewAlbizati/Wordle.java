@@ -1,15 +1,24 @@
 package com.github.AndrewAlbizati;
 
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class Wordle extends JFrame {
     private final LetterTile[][] guesses = new LetterTile[6][5];
     private final CheckButton[] checkButtons = new CheckButton[6];
+
+    private LetterTile tileSelected;
 
     private final String word;
 
@@ -17,7 +26,7 @@ public class Wordle extends JFrame {
         this.word = word;
 
         this.setLayout(new GridLayout(6, 6));
-        this.setSize(500,500);
+        this.setSize(500, 500);
         this.setTitle("Wordle");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -25,12 +34,15 @@ public class Wordle extends JFrame {
             for (int j = 0; j < 5; j++) {
                 LetterTile guess = new LetterTile(i, j);
                 guess.getDocument().addDocumentListener(new DocumentListener() {
+
                     public void changedUpdate(DocumentEvent e) {
-                        update();
+                        //update();
                     }
+
                     public void removeUpdate(DocumentEvent e) {
-                        update();
+                        //update();
                     }
+
                     public void insertUpdate(DocumentEvent e) {
                         update();
                     }
@@ -53,6 +65,7 @@ public class Wordle extends JFrame {
 
                                 if (guess.getLetterNum() < guesses[guess.getLetterNum()].length - 1) {
                                     SwingUtilities.invokeLater(() -> guesses[guess.getGuess()][guess.getLetterNum() + 1].requestFocus());
+                                    tileSelected = guesses[guess.getGuess()][guess.getLetterNum() + 1];
                                 }
                             }
                         };
@@ -102,6 +115,9 @@ public class Wordle extends JFrame {
 
             this.add(button);
         }
+
+        tileSelected = guesses[0][0];
+        SwingUtilities.invokeLater(() -> tileSelected.requestFocus());
     }
 
     private void onLeftClick(CheckButton button) {
@@ -116,7 +132,12 @@ public class Wordle extends JFrame {
             return;
         }
 
-        LetterStatus[] guessStatus = checkGuess(builder.toString());
+        if (!isValidWord(builder.toString())) {
+            JOptionPane.showMessageDialog(null, "That is not a valid word! Guess again.");
+            return;
+        }
+
+        LetterStatus[] guessStatus = checkGuess(builder.toString(), word);
 
         int correctLetters = 0;
 
@@ -149,7 +170,7 @@ public class Wordle extends JFrame {
         SwingUtilities.invokeLater(() -> guesses[button.getGuessNumber() + 1][0].requestFocus());
     }
 
-    private LetterStatus[] checkGuess(String guess) {
+    private static LetterStatus[] checkGuess(String guess, String word) {
         LetterStatus[] status = new LetterStatus[5];
 
         for (int i = 0; i < guess.length(); i++) {
@@ -169,10 +190,29 @@ public class Wordle extends JFrame {
     }
 
     private void onWin() {
-        JOptionPane.showMessageDialog(null, "You win! The word was " + word + ".");
+        JOptionPane.showMessageDialog(null, "You guess it! The word was " + word + ".");
     }
 
     private void onLose() {
-        JOptionPane.showMessageDialog(null, "You lose! The word was " + word + ".");
+        JOptionPane.showMessageDialog(null, "You ran out of guesses! The word was " + word + ".");
+    }
+
+    private static boolean isValidWord(String word) {
+        try {
+            InputStream jsonStream = Wordle.class.getResourceAsStream("/eligible-words.json");
+            JSONParser parser = new JSONParser();
+
+            if (jsonStream == null) {
+                throw new NullPointerException("eligible-words.json was not found");
+            }
+
+            JSONArray words = (JSONArray) parser.parse(new InputStreamReader(jsonStream, "UTF-8"));
+
+            return words.contains(word.toLowerCase());
+        } catch (IOException | ParseException | NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

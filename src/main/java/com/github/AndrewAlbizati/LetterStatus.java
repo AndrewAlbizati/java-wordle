@@ -11,5 +11,4 @@ public enum LetterStatus {
     LetterStatus(Color color) {
         this.color = color;
     }
-
 }
