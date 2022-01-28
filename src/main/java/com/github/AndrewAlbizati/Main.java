@@ -21,6 +21,8 @@ public class Main {
             word = (String) words.get((int) (Math.random() * words.size()));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
+
+            // Open a window that tells the user about the error
             JFrame frame = new JFrame();
             frame.setSize(400, 400);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,9 +34,8 @@ public class Main {
             frame.setVisible(true);
         }
 
+        // Generate new Wordle game
         if (word != null) {
-            //System.out.println(word);
-
             Wordle wordle = new Wordle(word);
             wordle.setVisible(true);
         }

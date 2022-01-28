@@ -8,6 +8,7 @@ public class LetterTile extends JTextField {
     public int getGuess() {
         return guess;
     }
+
     private final int letterNum;
     public int getLetterNum() {
         return letterNum;

@@ -4,7 +4,6 @@ import javax.swing.*;
 
 public class CheckButton extends JButton {
     private final int guessNumber;
-
     public int getGuessNumber() {
         return guessNumber;
     }
