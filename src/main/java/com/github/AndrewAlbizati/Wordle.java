@@ -190,7 +190,7 @@ public class Wordle extends JFrame {
     }
 
     private void onWin() {
-        JOptionPane.showMessageDialog(null, "You guess it! The word was " + word + ".");
+        JOptionPane.showMessageDialog(null, "You guessed it! The word was " + word + ".");
     }
 
     private void onLose() {

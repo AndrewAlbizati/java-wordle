@@ -33,7 +33,7 @@ public class Main {
         }
 
         if (word != null) {
-            System.out.println(word);
+            //System.out.println(word);
 
             Wordle wordle = new Wordle(word);
             wordle.setVisible(true);
