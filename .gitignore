@@ -4,8 +4,6 @@
 /build/
 *iml
 
-*.jar
-
 # macOS files
 *.DS_Store
 
