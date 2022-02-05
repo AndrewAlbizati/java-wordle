@@ -16,8 +16,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class Wordle extends JFrame {
-    private final LetterTile[][] guesses = new LetterTile[6][5];
-    private final CheckButton[] checkButtons = new CheckButton[6];
+    private final int wordSize;
+
+    private final LetterTile[][] guesses;
+    private final CheckButton[] checkButtons;
 
     private LetterTile tileSelected;
 
@@ -29,15 +31,19 @@ public class Wordle extends JFrame {
      */
     public Wordle(String word) {
         this.word = word;
+        wordSize = word.length();
 
-        this.setLayout(new GridLayout(6, 6));
-        this.setSize(500, 500);
-        this.setTitle("Wordle");
+        guesses = new LetterTile[wordSize + 1][wordSize];
+        checkButtons = new CheckButton[wordSize + 1];
+
+        this.setLayout(new GridLayout(wordSize + 1, wordSize + 1));
+        this.setSize(wordSize * 100, wordSize * 100);
+        this.setTitle("Wordle (" + word.length() + " letters)");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Try to add Wordle logo
         try {
-            InputStream logoStream = Main.class.getResourceAsStream("/logo.png");
+            InputStream logoStream = TitleScreen.class.getResourceAsStream("/logo.png");
             if (logoStream == null)
                 throw new NullPointerException("logo.png not found");
 
@@ -49,8 +55,8 @@ public class Wordle extends JFrame {
         }
 
         // Add guessing text tiles and "check" button tiles
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < wordSize + 1; i++) {
+            for (int j = 0; j < wordSize; j++) {
                 LetterTile guess = new LetterTile(i, j);
 
                 // Add event handlers for when user types
@@ -188,13 +194,13 @@ public class Wordle extends JFrame {
         button.setEnabled(false);
 
         // Player wins
-        if (correctLetters == 5) {
+        if (correctLetters == wordSize) {
             onWin();
             return;
         }
 
         // Player runs out of guesses
-        if (button.getGuessNumber() + 1 > 5) {
+        if (button.getGuessNumber() + 1 > wordSize) {
             onLose();
             return;
         }
@@ -219,7 +225,7 @@ public class Wordle extends JFrame {
      * @return An array of LetterStatuses that correspond to the letters in the guess.
      */
     private static LetterStatus[] checkGuess(String guess, String word) {
-        LetterStatus[] status = new LetterStatus[5];
+        LetterStatus[] status = new LetterStatus[guess.length()];
 
         // Go through each letter
         // If the guessed letter matches the real letter, it is CORRECT
