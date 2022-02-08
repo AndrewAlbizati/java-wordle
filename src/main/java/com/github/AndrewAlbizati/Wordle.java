@@ -164,7 +164,7 @@ public class Wordle extends JFrame {
     private class BackspaceAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!tileSelected.getText().isEmpty()) {
+            if (!tileSelected.getText().isEmpty() && tileSelected.isEnabled()) {
                 tileSelected.setText("");
             } else if (tileSelected.getLetterNum() > 0){
                 tileSelected = guesses[tileSelected.getGuess()][tileSelected.getLetterNum() - 1];
