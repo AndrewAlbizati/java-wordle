@@ -4,6 +4,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -28,6 +29,19 @@ public class TitleScreen extends JFrame {
         this.setSize(400, 400);
         this.setTitle("Wordle (Title Screen)");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Try to add Wordle logo
+        try {
+            InputStream logoStream = TitleScreen.class.getResourceAsStream("/logo.png");
+            if (logoStream == null)
+                throw new NullPointerException("logo.png not found");
+
+            Image image = ImageIO.read(logoStream);
+
+            this.setIconImage(image);
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace(); // Ignore, use default Java logo for icon
+        }
 
         this.add(new JLabel(""));
 

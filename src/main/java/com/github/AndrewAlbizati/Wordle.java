@@ -9,8 +9,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -104,6 +103,14 @@ public class Wordle extends JFrame {
                     }
                 });
 
+                // Add keystroke action for backspace
+                guess.getInputMap().put(KeyStroke.getKeyStroke("BACK_SPACE"), "backspaceAction");
+                guess.getActionMap().put("backspaceAction", new BackspaceAction());
+
+                // Add keystroke action for enter
+                guess.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "enterAction");
+                guess.getActionMap().put("enterAction", new EnterAction());
+
                 this.add(guess);
                 guesses[i][j] = guess;
                 if (i > 0) {
@@ -152,6 +159,25 @@ public class Wordle extends JFrame {
 
         tileSelected = guesses[0][0];
         SwingUtilities.invokeLater(() -> tileSelected.requestFocus());
+    }
+
+    private class BackspaceAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (!tileSelected.getText().isEmpty()) {
+                tileSelected.setText("");
+            } else if (tileSelected.getLetterNum() > 0){
+                tileSelected = guesses[tileSelected.getGuess()][tileSelected.getLetterNum() - 1];
+                SwingUtilities.invokeLater(() -> tileSelected.requestFocus());
+            }
+        }
+    }
+
+    private class EnterAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            onLeftClick(checkButtons[tileSelected.getGuess()]);
+        }
     }
 
     /**
