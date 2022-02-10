@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.Instant;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Random;
@@ -132,7 +132,7 @@ public class TitleScreen extends JFrame {
         }
 
         // Generate one random word per day
-        ZonedDateTime time = Instant.now().atZone(ZoneOffset.UTC);
+        ZonedDateTime time = Instant.now().atZone(ZoneId.systemDefault());
         int month = time.getMonthValue();
         int day = time.getDayOfMonth();
         int year = time.getYear();
